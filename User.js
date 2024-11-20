@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
 	street: String,
@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema({
 		default: () => Date.now(),
 	},
 	bestFriend: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: "User"
-    },
+		type: mongoose.SchemaTypes.ObjectId,
+		ref: "User",
+	},
 	hobbies: [String],
 	address: {
 		type: addressSchema,
@@ -42,42 +42,40 @@ const userSchema = new mongoose.Schema({
 });
 
 // make function for call when is get the query
-userSchema.methods.hello =function(){
-    console.log(`hello there ${this.name}`);
+userSchema.methods.hello = function () {
+	console.log(`hello there ${this.name}`);
 };
 
-// this return data where age === the age in collections 
-userSchema.statics.findByAge = function(age){
-    return this.find({age: age});
-}
+// this return data where age === the age in collections
+userSchema.statics.findByAge = function (age) {
+	return this.find({ age: age });
+};
 
-// this return data where name === the name in collections 
+// this return data where name === the name in collections
 userSchema.statics.findByName = function (name) {
-	return this.find({name:new RegExp(name,'i')});
+	return this.find({ name: new RegExp(name, "i") });
 };
 
-// it use when query is already call not first call 
-// use => find or where method to call them 
+// it use when query is already call not first call
+// use => find or where method to call them
 userSchema.query.byName = function (name) {
-	return this.where({ name: new RegExp(name, 'i') });
+	return this.where({ name: new RegExp(name, "i") });
 };
 
-
-
-userSchema.virtual('nameAge').get(function () {
+userSchema.virtual("nameAge").get(function () {
 	return `${this.name} ${this.age}`;
 });
 
-// when save is call the function 
-userSchema.pre('save',function(next) {
-    this.updateAt = Date.now();
-    next();
-})
+// when save is call the function
+userSchema.pre("save", function (next) {
+	this.updateAt = Date.now();
+	next();
+});
 
 //after the save this call function
 // doc is user object
-userSchema.post('save', function (doc, next) {
+userSchema.post("save", function (doc, next) {
 	doc.hello();
 	next();
 });
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
